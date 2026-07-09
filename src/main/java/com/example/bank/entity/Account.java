@@ -2,6 +2,8 @@ package com.example.bank.entity;
 
 import com.example.bank.enums.AccountStatus;
 import com.example.bank.exception.account.AccountAlreadyClosedException;
+import com.example.bank.exception.account.AccountUnavailableException;
+import com.example.bank.exception.account.InsufficientBalanceException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -49,10 +51,32 @@ public class Account {
     }
 
     public void deactivate(){
-        if(this.status == AccountStatus.CLOSED){
+        if(status == AccountStatus.CLOSED){
             throw new AccountAlreadyClosedException();
         }
-        this.status = AccountStatus.CLOSED;
-        this.closedAt = OffsetDateTime.now();
+        status = AccountStatus.CLOSED;
+        closedAt = OffsetDateTime.now();
+    }
+
+    public void deposit(Long amount){
+
+        if(status != AccountStatus.ACTIVE){
+            throw new AccountUnavailableException();
+        }
+
+        balance += amount;
+
+    }
+
+    public void withdraw(Long amount){
+
+        if(status != AccountStatus.ACTIVE){
+            throw new AccountUnavailableException();
+        }
+        if(balance < amount){
+            throw new InsufficientBalanceException();
+        }
+
+        balance -= amount;
     }
 }

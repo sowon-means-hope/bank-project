@@ -96,8 +96,3 @@ CREATE TABLE audit_log(
         CHECK(action IN ('INSERT', 'UPDATE', 'DELETE'))
 );
 
-
-SELECT table_name
-FROM information_schema.tables
-WHERE table_schema = 'public';
-

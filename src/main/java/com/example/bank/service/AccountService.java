@@ -3,9 +3,16 @@ package com.example.bank.service;
 import com.example.bank.dto.account.AccountDetailResponse;
 import com.example.bank.dto.account.AccountResponse;
 import com.example.bank.dto.account.VerifyAccountResponse;
+import com.example.bank.dto.account.TransferRequest;
+import com.example.bank.dto.account.TransferResponse;
 import com.example.bank.entity.Account;
 import com.example.bank.entity.Member;
+import com.example.bank.entity.Transaction;
+import com.example.bank.enums.AccountStatus;
+import com.example.bank.enums.TransactionType;
 import com.example.bank.exception.account.AccountNotFoundException;
+import com.example.bank.exception.account.AccountUnavailableException;
+import com.example.bank.exception.transfer.SameAccountTransferException;
 import com.example.bank.generator.AccountNumberGenerator;
 import com.example.bank.repository.AccountRepository;
 import com.example.bank.repository.MemberRepository;
@@ -21,6 +28,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final MemberRepository memberRepository;
     private final AccountNumberGenerator accountNumberGenerator;
+    private final TransactionService transactionService;
 
     @Transactional
     public AccountDetailResponse openAccount(Long memberId){
@@ -88,8 +96,63 @@ public class AccountService {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(AccountNotFoundException::new);
 
+        if(account.getStatus() != AccountStatus.ACTIVE){
+            throw new AccountUnavailableException();
+        }
+
         String name = account.getMember().getName();
 
         return new VerifyAccountResponse(name);
+    }
+
+    @Transactional
+    public TransferResponse transfer(
+            TransferRequest request,
+            Long memberId
+    ){
+        String fromAccountNumber = request.fromAccountNumber();
+        String toAccountNumber = request.toAccountNumber();
+
+        if(fromAccountNumber.equals(toAccountNumber)){
+            throw new SameAccountTransferException();
+        }
+
+        Account fromAccount = accountRepository
+                .findByAccountNumberAndMemberIdWithLock(
+                        fromAccountNumber,
+                        memberId
+                ).orElseThrow(AccountNotFoundException::new);
+
+        Account toAccount = accountRepository
+                .findByAccountNumberWithLock(toAccountNumber)
+                .orElseThrow(AccountNotFoundException::new);
+
+        Long amount = request.amount();
+
+        fromAccount.withdraw(amount);
+        toAccount.deposit(amount);
+
+
+        // call TransactionService to save Transaction
+        Transaction transaction = transactionService.saveTransaction(
+                fromAccount,
+                TransactionType.TRANSFER_OUT,
+                amount,
+                toAccount.getAccountNumber(),
+                request.description()
+        );
+
+        transactionService.saveTransaction(
+                toAccount,
+                TransactionType.TRANSFER_IN,
+                amount,
+                fromAccount.getAccountNumber(),
+                request.description()
+        );
+
+        return new TransferResponse(
+                toAccount.getMember().getName(),
+                transaction
+        );
     }
 }
