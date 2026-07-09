@@ -1,8 +1,11 @@
 package com.example.bank.exception.auth;
 
-public class DuplicateLoginIdException extends RuntimeException{
+import com.example.bank.exception.BankException;
+import org.springframework.http.HttpStatus;
+
+public class DuplicateLoginIdException extends BankException {
 
     public DuplicateLoginIdException() {
-        super("이미 존재하는 아이디입니다.");
+        super(HttpStatus.BAD_REQUEST, "이미 존재하는 아이디입니다.");
     }
 }

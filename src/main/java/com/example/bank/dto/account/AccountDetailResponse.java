@@ -9,14 +9,16 @@ public record AccountDetailResponse (
         String accountNumber,
         Long balance,
         AccountStatus status,
-        OffsetDateTime createdAt
+        OffsetDateTime createdAt,
+        OffsetDateTime closedAt
 ){
     public AccountDetailResponse(Account account) {
         this(
                 account.getAccountNumber(),
                 account.getBalance(),
                 account.getStatus(),
-                account.getCreatedAt()
+                account.getCreatedAt(),
+                account.getClosedAt()
         );
     }
 }

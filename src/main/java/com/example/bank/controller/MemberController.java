@@ -5,6 +5,7 @@ import com.example.bank.dto.member.MemberSignUpRequest;
 import com.example.bank.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,14 +19,13 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> signUp(
+    public ResponseEntity<Void> signUp(
             @Valid @RequestBody MemberSignUpRequest request
             ){
         memberService.signUp(request);
 
-        return ResponseEntity.ok(
-            ApiResponse.success("회원가입 성공")
-        );
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .build();
     }
 
 }

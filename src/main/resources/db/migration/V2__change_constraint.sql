@@ -16,6 +16,9 @@ CHECK ( account_number ~ '^[0-9]{12}$');
 
 -- transaction_history 상대방 계좌 제약조건: NULL or 글자 수(12) -> NULL or 숫자 12자
 ALTER TABLE transaction_history
+DROP CONSTRAINT chk_transaction_history_opponent_account;
+
+ALTER TABLE transaction_history
 ADD CONSTRAINT chk_transaction_history_opponent_account
 CHECK (
     opponent_account IS NULL

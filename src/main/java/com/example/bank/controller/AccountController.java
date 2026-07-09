@@ -3,10 +3,12 @@ package com.example.bank.controller;
 import com.example.bank.dto.ApiResponse;
 import com.example.bank.dto.account.AccountDetailResponse;
 import com.example.bank.dto.account.AccountResponse;
+import com.example.bank.dto.account.VerifyAccountResponse;
 import com.example.bank.entity.Account;
 import com.example.bank.security.CustomUserDetails;
 import com.example.bank.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,59 +22,55 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> openAccount(
+    public ResponseEntity<AccountDetailResponse> openAccount(
             @AuthenticationPrincipal CustomUserDetails userDetails
             ){
 
-        accountService.openAccount(userDetails.getMemberId());
+        AccountDetailResponse accountDetail  = accountService.openAccount(userDetails.getMemberId());
 
-        return ResponseEntity.ok(ApiResponse.success("계좌 개설 성공"));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(accountDetail);
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<AccountResponse>>> getAccounts(
+    public ResponseEntity<List<AccountResponse>> getAccounts(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ){
         List<AccountResponse> accounts =
                 accountService.getAccounts(userDetails.getMemberId());
 
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "계좌 조회 성공",
-                        accounts
-                )
-        );
+        return ResponseEntity.ok(accounts);
     }
 
     @GetMapping("/{accountNumber}")
-    public ResponseEntity<ApiResponse<AccountDetailResponse>> getAccountDetail(
+    public ResponseEntity<AccountDetailResponse> getAccountDetail(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable String accountNumber
     ){
         AccountDetailResponse accountDetail =
                 accountService.getAccountDetail(accountNumber, userDetails.getMemberId());
 
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "계좌 상세 조회 성공",
-                        accountDetail
-                )
-        );
+        return ResponseEntity.ok(accountDetail);
     }
 
     @PatchMapping("/{accountNumber}")
-    public ResponseEntity<ApiResponse<AccountDetailResponse>> closeAccount(
+    public ResponseEntity<AccountDetailResponse> closeAccount(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable String accountNumber
     ){
         AccountDetailResponse accountDetail =
                 accountService.closeAccount(accountNumber, userDetails.getMemberId());
 
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "계좌 해지 성공",
-                        accountDetail
-                )
-        );
+        return ResponseEntity.ok(accountDetail);
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<VerifyAccountResponse> verifyAccount(
+            @RequestParam String accountNumber
+    ){
+        VerifyAccountResponse response =
+                accountService.verifyAccount(accountNumber);
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -21,4 +21,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     );
 
     List<Account> findAll();
+
+    Optional<Account> findByAccountNumber(String accountNumber);
 }

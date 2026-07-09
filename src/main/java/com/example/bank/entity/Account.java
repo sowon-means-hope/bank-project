@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.OffsetDateTime;
 
@@ -32,8 +33,12 @@ public class Account {
     @Column(nullable = false)
     private AccountStatus status = AccountStatus.ACTIVE;
 
-    @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
+
+    @Column(name = "closed_at")
+    private OffsetDateTime closedAt;
 
     public Account(
             Member member,
@@ -48,5 +53,6 @@ public class Account {
             throw new AccountAlreadyClosedException();
         }
         this.status = AccountStatus.CLOSED;
+        this.closedAt = OffsetDateTime.now();
     }
 }

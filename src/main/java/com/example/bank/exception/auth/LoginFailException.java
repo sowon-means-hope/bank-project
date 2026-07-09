@@ -1,7 +1,11 @@
 package com.example.bank.exception.auth;
 
-public class LoginFailException extends RuntimeException{
+import com.example.bank.exception.BankException;
+import org.springframework.http.HttpStatus;
+
+public class LoginFailException extends BankException {
     public LoginFailException(){
-        super("없는 아이디이거나 비밀번호가 틀립니다.");
+
+        super(HttpStatus.UNAUTHORIZED, "없는 아이디이거나 비밀번호가 틀립니다.");
     }
 }

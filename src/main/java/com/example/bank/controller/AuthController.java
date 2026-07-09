@@ -19,15 +19,11 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthLoginResponse>> login(
+    public ResponseEntity<AuthLoginResponse> login(
             @Valid @RequestBody AuthLoginRequest request
             ){
         String accessToken = authService.login(request);
 
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "로그인 성공",
-                        new AuthLoginResponse(accessToken))
-        );
+        return ResponseEntity.ok(new AuthLoginResponse(accessToken));
     }
 }
