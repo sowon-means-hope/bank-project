@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bank.mapper.TransactionMapper">
+
+    <select id="findTransactions"
+            parameterType="com.example.bank.dto.transaction.TransactionSearchCondition"
+            resultType="com.example.bank.dto.transaction.TransactionResponse">
+
+        SELECT
+            id                  AS transactionId,
+            type                AS transactionType,
+            amount,
+            balance_after       AS balanceAfter,
+            opponent_account    AS opponentAccount,
+            opponent_name       AS opponentName,
+            description,
+            created_at          AS createdAt
+        FROM transaction_history
+        WHERE account_id = #{accountId}
+
+        <if test="transactionType != null">
+            AND type = #{transactionType}
+        </if>
+
+        <if test="startDateTime != null">
+            AND created_at &gt;= #{startDateTime}
+        </if>
+
+        <if test="endDateTime != null">
+            AND created_at $lt;= #{endDateTime}
+        </if>
+
+        ORDER BY created_at DESC
+
+        LIMIT #{limit}
+        OFFSET #{offset}
+
+    </select>
+
+</mapper>

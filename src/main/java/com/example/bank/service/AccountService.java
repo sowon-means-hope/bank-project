@@ -139,6 +139,7 @@ public class AccountService {
                 TransactionType.TRANSFER_OUT,
                 amount,
                 toAccount.getAccountNumber(),
+                toAccount.getMember().getName(),
                 request.description()
         );
 
@@ -147,12 +148,10 @@ public class AccountService {
                 TransactionType.TRANSFER_IN,
                 amount,
                 fromAccount.getAccountNumber(),
+                fromAccount.getMember().getName(),
                 request.description()
         );
 
-        return new TransferResponse(
-                toAccount.getMember().getName(),
-                transaction
-        );
+        return new TransferResponse(transaction);
     }
 }

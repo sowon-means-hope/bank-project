@@ -7,8 +7,6 @@ import java.time.OffsetDateTime;
 
 public record TransferResponse (
     Long transactionId,
-    TransactionType transactionType,
-    String fromAccountNumber,
     String toAccountNumber,
     String recipientName,
     Long amount,
@@ -17,15 +15,12 @@ public record TransferResponse (
     OffsetDateTime transferredAt
 ){
     public TransferResponse(
-            String recipientName,
             Transaction transaction
     ){
         this(
                 transaction.getId(),
-                transaction.getType(),
-                transaction.getAccount().getAccountNumber(),
                 transaction.getOpponentAccount(),
-                recipientName,
+                transaction.getOpponentName(),
                 transaction.getAmount(),
                 transaction.getBalanceAfter(),
                 transaction.getDescription(),

@@ -36,6 +36,9 @@ public class Transaction {
     @Column(name = "opponent_account", nullable = false)
     private String opponentAccount;
 
+    @Column(name = "opponent_name", nullable = false)
+    private String opponentName;
+
     @Column
     private String description;
 
@@ -49,6 +52,7 @@ public class Transaction {
             Long amount,
             Long balanceAfter,
             String opponentAccount,
+            String opponentName,
             String description
     ){
         this.account = account;
@@ -56,6 +60,7 @@ public class Transaction {
         this.amount = amount;
         this.balanceAfter = balanceAfter;
         this.opponentAccount = opponentAccount;
+        this.opponentName = opponentName;
         this.description = description;
     }
 }
