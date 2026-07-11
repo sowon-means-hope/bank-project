@@ -8,6 +8,7 @@ import com.example.bank.dto.account.TransferResponse;
 import com.example.bank.security.CustomUserDetails;
 import com.example.bank.service.AccountService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -71,6 +72,7 @@ public class AccountController {
     @GetMapping("/verify")
     public ResponseEntity<VerifyAccountResponse> verifyAccount(
             @RequestParam
+            @NotBlank(message = "계좌번호를 입력해주세요.")
             @Pattern(
                     regexp = "^[0-9]{12}$",
                     message = "계좌번호는 12자리 숫자여야 합니다."

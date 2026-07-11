@@ -9,10 +9,10 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 
 public record TransactionSearchRequest (
-        @NotBlank(message = "계좌번호는 필수입니다.")
+        @NotBlank(message = "계좌를 선택해주세요.")
         @Pattern(
                 regexp = "^[0-9]{12}$",
-                message = "계좌번호는 12자리 숫자여야 합니다."
+                message = "올바르지 않은 계좌번호 입니다."
         )
         String accountNumber,
 

@@ -1,5 +1,6 @@
 package com.example.bank.service;
 
+import com.example.bank.dto.transaction.RecentTargetResponse;
 import com.example.bank.dto.transaction.TransactionResponse;
 import com.example.bank.dto.transaction.TransactionSearchCondition;
 import com.example.bank.dto.transaction.TransactionSearchRequest;
@@ -12,7 +13,6 @@ import com.example.bank.repository.AccountRepository;
 import com.example.bank.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -80,5 +80,15 @@ public class TransactionService {
                 );
 
         return transactionMapper.findTransactions(condition);
+    }
+
+    public List<RecentTargetResponse> getRecentTargets(
+            String accountNumber,
+            Long memberId
+    ){
+        Account account = accountRepository.findByAccountNumberAndMemberId(accountNumber, memberId)
+                .orElseThrow(AccountNotFoundException::new);
+
+        return transactionMapper.findRecentTargets(account.getId());
     }
 }

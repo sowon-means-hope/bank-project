@@ -1,5 +1,6 @@
 package com.example.bank.entity;
 
+import com.example.bank.enums.MemberStatus;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 
@@ -30,6 +31,10 @@ public class Member {
 
     @Column(unique = true, length = 100)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MemberStatus status = MemberStatus.ACTIVE;
 
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private OffsetDateTime createdAt;

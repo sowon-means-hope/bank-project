@@ -1,0 +1,2 @@
+CREATE INDEX idx_transaction_account_opponent_created
+ON transaction_history(account_id, opponent_account, created_at DESC);

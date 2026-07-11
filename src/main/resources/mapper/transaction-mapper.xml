@@ -40,4 +40,28 @@
 
     </select>
 
+    <select id="findRecentTargets"
+            parameterType="long"
+            resultType="com.example.bank.dto.transaction.RecentTargetResponse">
+        SELECT *
+        FROM (
+            SELECT DISTINCT ON (th.opponent_account)
+                th.opponent_account AS opponentAccount,
+                m.name              AS opponentName,
+                a.status            AS accountStatus,
+                th.created_at       AS lastTransferredAt
+            FROM transaction_history th
+            JOIN account a
+            ON th.opponent_account = a.account_number
+            JOIN member m
+            ON m.id = a.member_id
+            WHERE th.account_id = #{accountId}
+            ORDER BY
+                th.opponent_account,
+                th.created_at DESC
+        ) recent_targets
+        ORDER BY lastTransferredAt DESC
+        LIMIT 5;
+
+    </select>
 </mapper>
