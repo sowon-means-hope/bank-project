@@ -10,6 +10,7 @@ import com.example.bank.entity.Member;
 import com.example.bank.entity.Transaction;
 import com.example.bank.enums.AccountStatus;
 import com.example.bank.enums.TransactionType;
+import com.example.bank.event.TransferSucceedEvent;
 import com.example.bank.exception.account.AccountNotFoundException;
 import com.example.bank.exception.account.AccountUnavailableException;
 import com.example.bank.exception.transfer.SameAccountTransferException;
@@ -17,6 +18,7 @@ import com.example.bank.generator.AccountNumberGenerator;
 import com.example.bank.repository.AccountRepository;
 import com.example.bank.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ public class AccountService {
     private final MemberRepository memberRepository;
     private final AccountNumberGenerator accountNumberGenerator;
     private final TransactionService transactionService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public AccountDetailResponse openAccount(Long memberId){
@@ -134,7 +137,7 @@ public class AccountService {
 
 
         // call TransactionService to save Transaction
-        Transaction transaction = transactionService.saveTransaction(
+        Transaction fromTransaction = transactionService.saveTransaction(
                 fromAccount,
                 TransactionType.TRANSFER_OUT,
                 amount,
@@ -143,7 +146,7 @@ public class AccountService {
                 request.description()
         );
 
-        transactionService.saveTransaction(
+        Transaction toTransaction = transactionService.saveTransaction(
                 toAccount,
                 TransactionType.TRANSFER_IN,
                 amount,
@@ -152,6 +155,29 @@ public class AccountService {
                 request.description()
         );
 
-        return new TransferResponse(transaction);
+        // publish event for notification
+        eventPublisher.publishEvent(
+                new TransferSucceedEvent(
+                        fromTransaction.getId(),
+                        toTransaction.getId(),
+
+                        fromTransaction.getAmount(),
+
+                        fromAccount.getMember().getId(),
+                        toAccount.getMember().getId(),
+
+                        fromAccount.getMember().getName(),
+                        toAccount.getMember().getName(),
+                        fromAccount.getAccountNumber(),
+                        toAccount.getAccountNumber(),
+                        fromTransaction.getBalanceAfter(),
+                        toTransaction.getBalanceAfter()
+                )
+        );
+
+
+        return new TransferResponse(fromTransaction);
     }
+
+
 }

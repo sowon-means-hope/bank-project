@@ -47,11 +47,12 @@ public class TransactionService {
     }
 
     public List<TransactionResponse> searchTransactions(
+            String accountNumber,
             TransactionSearchRequest request,
             Long memberId
     ){
         Account account = accountRepository.findByAccountNumberAndMemberId(
-                request.accountNumber(),
+                accountNumber,
                 memberId
         ).orElseThrow(AccountNotFoundException::new);
 

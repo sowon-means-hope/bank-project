@@ -19,17 +19,23 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/transactions")
+@RequestMapping("/transactions/{accountNumber}")
 public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping
     public ResponseEntity<List<TransactionResponse>> searchTransactions(
             @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Pattern(
+                    regexp = "^[0-9]{12}$",
+                    message = "올바르지 않은 계좌번호입니다."
+            )
+            @PathVariable
+            String accountNumber,
             @Valid @ModelAttribute TransactionSearchRequest request
             ){
         List<TransactionResponse> responses =
-                transactionService.searchTransactions(request, userDetails.getMemberId());
+                transactionService.searchTransactions(accountNumber, request, userDetails.getMemberId());
 
         return ResponseEntity.ok(responses);
     }
