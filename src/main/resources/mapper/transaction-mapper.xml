@@ -30,7 +30,7 @@
         </if>
 
         <if test="endDateTime != null">
-            AND created_at $lt;= #{endDateTime}
+            AND created_at &lt;= #{endDateTime}
         </if>
 
         ORDER BY created_at DESC
