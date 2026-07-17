@@ -30,7 +30,7 @@
 ## 주요 기능
 
 ### 사용자
-- 회원가입
+- 회원가입 
 - 로그인 (JWT 발급 및 인증)
 
 ### 계좌
@@ -134,4 +134,22 @@ audit_log의 로그 자동 생성
 - trg_transaction_audit : transaction_history에 INSERT 시
 - trg_notification_audit : notification에 INSERT 시
 
-### 프로젝트 구조
+## 프로젝트 구조
+![Architecture](images/architecture.drawio.png)
+
+## API
+| Domain | Method  | Endpoint                                                                     | Description |
+|--------|---------|------------------------------------------------------------------------------|------------|
+| Member | `POST`  | `/members`                                                                   | 회원가입       |
+| Auth   | `POST`  | `/auth/login`                                                                | 로그인        |
+| Account | `POST`  | `/accounts`                                                                  | 계좌 개설      |
+| Account | `GET`   | `/accounts`                                                                  | 계좌 조회      |
+| Account | `GET`   | `/accounts/{accountNumber}`                                                  | 계좌 상세 조회   |
+| Account | `PATCH` | `/accounts/{accountNumber}`                                                  | 계좌 해지      |
+| Account | `GET`   | `/accounts/verify?accountNumber={accountNumber}`                             | 예금주 조회     |
+| Account | `POST`  | `/accounts/transfer`                                                         | 송금         |
+| Transaction | `GET` | `/transactions/{accountNumber}`                                              | 거래내역 조회    |
+| Transaction | `GET` | `/transactions/{accountNumber}/recent-targets` | 최근 거래 상대 조회 |
+| Notification | `GET` | `/notifications`                                                             | 알림 내역 조회 |
+| Notification | `PATCH` | `/notifications/{notificationId}`                                            | 알림 읽음 처리 |
+

@@ -43,12 +43,11 @@ public class TransactionController {
     @GetMapping("/recent-targets")
     public ResponseEntity<List<RecentTargetResponse>> getRecentTargets(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam
-            @NotBlank(message = "계좌를 선택해주세요.")
             @Pattern(
                     regexp = "^[0-9]{12}$",
                     message = "올바르지 않은 계좌번호입니다."
             )
+            @PathVariable
             String accountNumber
     ){
         List<RecentTargetResponse> responses =
