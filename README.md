@@ -153,3 +153,32 @@ audit_log의 로그 자동 생성
 | Notification | `GET` | `/notifications`                                                             | 알림 내역 조회 |
 | Notification | `PATCH` | `/notifications/{notificationId}`                                            | 알림 읽음 처리 |
 
+## 핵심 기능
+
+### 송금
+로그인한 사용자가 자신의 계좌에서 다른 계좌로 송금하는 기능입니다
+
+![Transfer](images/transfer.drawio.png)
+
+- JWT 로그인 인증 방식으로 서버의 자유 보장. 
+- @Transactional 사용으로 송금 과정에의 원자성 보장
+- Pessimistic Lock으로 동시 송금 방지
+- EventListener는 AFTER_COMMIT으로 rollback 반영
+
+송금 기능의 Postman 실행 결과
+![TransferPostman](images/transfer.postman.png)
+
+### 거래내역 조회
+로그인한 사용자가 자신의 계좌별 거래내역을 조회하는 기능입니다. 거래타입이나 거래기간(시작날짜/종료날짜)를 선택할 수 있습니다.
+
+## 테스트
+
+### 단위 테스트
+JUnit5 + Mockito
+
+### 통합 테스트
+JUnit5 + Spring Boot Test
+
+## 트러블 슈팅
+
+## 개선 및 확장
