@@ -27,7 +27,7 @@
 - Postman
 - Flyway
 
-## 주요 기능
+## 구현 기능
 
 ### 사용자
 - 회원가입 
@@ -160,8 +160,8 @@ audit_log의 로그 자동 생성
 
 ![Transfer](images/transfer.drawio.png)
 
-- JWT 로그인 인증 방식으로 서버의 자유 보장. 
-- @Transactional 사용으로 송금 과정에의 원자성 보장
+- JWT 로그인 인증 방식으로 서버의 자유를 보장
+- @Transactional 사용으로 송금 과정의 원자성 보장
 - Pessimistic Lock으로 동시 송금 방지
 - EventListener는 AFTER_COMMIT으로 rollback 반영
 
@@ -240,5 +240,28 @@ JUnit5 + Spring Boot Test
   ![TransferInsufficientBalanceIntegrationTest](images/transfer_insufficient_balance.integration_test.png)
 
 ## 트러블 슈팅
+1. 송금 완료 후 Notifiaction 저장 실패
+   1. 문제 : EventListener는 송금 완료와 이벤트 발행이 rollback 없이 완료되고 실행되어야 하므로 @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)으로 구현하였습니다. 그러나, Commit이 되면 트랜잭션이 종료되어 Notification 저장이 불가능합니다.
+   2. 해결 : Notification 저장에 관해 NotificationService로 책임을 분리하고 NotificationService에 @Transactional(propagation = Propagation.REQUIRES_NEW)를 적용하여 Notification 저장 용 새로운 트랜잭션을 실행합니다.
 
 ## 개선 및 확장
+앞으로 본 프로젝트에 추가, 개선, 도입할 수 있는 기술들입니다.
+
+### 개선
+1. 핵심 기능(ex-송금)에 대한 모든 테스트 케이스 확인
+   - 자기 자신에게 송금 : SameAccountTransferException 발생
+   - 존재하지 않는 계좌로 송금 : AccountNotFoundException 발생
+   - 계좌의 상태가 ACTIVE가 아님 : AccountUnavailableException 발생
+   - 송금 금액이 0 이하 : 요청 시 validation에서 막히지만, Service에서 Exception 발생시킬 것.
+2. Docker, AWS + Swagger로 패키징 및 배포
+3. Jenkins 도입으로 테스트-패키징-배포 자동화
+
+### 확장
+1. RAG 거래내역 검색 : 기존의 거래내역 조회을 AI 기술을 이용하여 구현
+2. member에 role 컬럼 추가 : 단순 현금 입출금, RAG 거래 통계 기능 추가 가능
+   - ROLE_USER : 일반 사용자
+   - ROLE_BANKER : 은행 창구
+   - ROLE_ATM : ATM
+   - ROLE_ADMIN : 관리자
+3. 자동이체 기능 추가 : Scheduler + Batch를 사용하여 자동이체 등록 및 해지, 자동이체 목록 및 상세 조회 추가 가능
+4. AI 이상 거래 탐지 -> 해당 계좌를 블랙 리스트(Redis)에 올리고 임시 차단(Lock) -> 관리자 확인 요청 -> 계좌 동결(FROZEN)
