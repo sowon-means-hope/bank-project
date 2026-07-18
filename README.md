@@ -166,10 +166,54 @@ audit_log의 로그 자동 생성
 - EventListener는 AFTER_COMMIT으로 rollback 반영
 
 ![TransferPostman](images/transfer.postman.png)
-송금 기능의 Postman 실행 결과
+송금 Postman 실행 결과
 
 ### 거래내역 조회
-로그인한 사용자가 자신의 계좌별 거래내역을 조회하는 기능입니다. 거래타입이나 거래기간(시작날짜/종료날짜)를 선택할 수 있습니다.
+로그인한 사용자가 자신의 계좌별 거래내역을 조회하는 기능입니다. 거래타입이나 거래기간(시작/종료 날짜)를 선택할 수 있습니다.
+
+![Transaction](images/transaction.drawio.png)
+```xml
+<select id="findTransactions"
+            parameterType="com.example.bank.dto.transaction.TransactionSearchCondition"
+            resultType="com.example.bank.dto.transaction.TransactionResponse">
+
+        SELECT
+            id                  AS transactionId,
+            type                AS transactionType,
+            amount,
+            balance_after       AS balanceAfter,
+            opponent_account    AS opponentAccount,
+            opponent_name       AS opponentName,
+            description,
+            created_at          AS createdAt
+        FROM transaction_history
+        WHERE account_id = #{accountId}
+
+        <if test="transactionType != null">
+            AND type = #{transactionType}
+        </if>
+
+        <if test="startDateTime != null">
+            AND created_at &gt;= #{startDateTime}
+        </if>
+
+        <if test="endDateTime != null">
+            AND created_at &lt;= #{endDateTime}
+        </if>
+
+        ORDER BY created_at DESC
+
+        LIMIT #{limit}
+        OFFSET #{offset}
+
+    </select>
+```
+- Mybatis 사용하여 조회
+- 동적 SQL 통해 거래타입, 거래기간, 페이지 등의 조건을 유연하게 처리
+- 조회 성능을 위해 계좌와 거래일시 컬럼에 Index 적용
+
+![TransactionPostman](images/transaction.postman.png)
+거래내역 조회 Postman 실행 결과
 
 ## 테스트
 
