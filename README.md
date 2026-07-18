@@ -216,12 +216,28 @@ audit_log의 로그 자동 생성
 거래내역 조회 Postman 실행 결과
 
 ## 테스트
+핵심 기능인 송금에 대하여 송금 성공과 잔액 부족으로 인한 실패를 Given / When /Then에 맞추어 테스트하였습니다.
 
 ### 단위 테스트
 JUnit5 + Mockito
 
+[`AccountServiceTest`](src/test/java/com/example/bank/service/AccountServiceTest.java)
+- 송금_성공()
+  ![TransferSuccessTest](images/transfer_success.test.png)
+- 송금_실패_잔액부족()
+  ![TransferFailInsufficientBalanceTest](images/transfer_fail_insufficient_balance.test.png)
+
 ### 통합 테스트
 JUnit5 + Spring Boot Test
+
+[`AccountServiceIntegrationTest`](src/test/java/com/example/bank/service/AccountServiceIntegrationTest.java)
+
+환경변수 사용 : `DB_USERNAME`,`DB_PASSWORD`,`JWT_SECRET`
+
+- 송금_통합테스트()
+  ![TransferIntegrationTest](images/transfer.integration_test.png)
+- 잔액부족_통합테스트()
+  ![TransferInsufficientBalanceIntegrationTest](images/transfer_insufficient_balance.integration_test.png)
 
 ## 트러블 슈팅
 
