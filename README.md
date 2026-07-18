@@ -165,8 +165,8 @@ audit_log의 로그 자동 생성
 - Pessimistic Lock으로 동시 송금 방지
 - EventListener는 AFTER_COMMIT으로 rollback 반영
 
-송금 기능의 Postman 실행 결과
 ![TransferPostman](images/transfer.postman.png)
+송금 기능의 Postman 실행 결과
 
 ### 거래내역 조회
 로그인한 사용자가 자신의 계좌별 거래내역을 조회하는 기능입니다. 거래타입이나 거래기간(시작날짜/종료날짜)를 선택할 수 있습니다.
