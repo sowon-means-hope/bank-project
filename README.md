@@ -277,4 +277,5 @@ JUnit5 + Spring Boot Test
    - ROLE_ATM : ATM
    - ROLE_ADMIN : 관리자
 3. 자동이체 기능 추가 : Scheduler + Batch를 사용하여 자동이체 등록 및 해지, 자동이체 목록 및 상세 조회 추가 가능
-4. AI 이상 거래 탐지 -> 해당 계좌를 블랙 리스트(Redis)에 올리고 임시 차단(Lock) -> 관리자 확인 요청 -> 계좌 동결(FROZEN)
+4. AI Agent 송금 : 기존의 송금 기능을 AI가 수행
+5. AI 이상 거래 탐지 -> 해당 계좌를 블랙 리스트(Redis)에 올리고 임시 차단(Lock) -> 관리자 확인 요청 -> 계좌 동결(FROZEN)
