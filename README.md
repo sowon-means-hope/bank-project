@@ -6,10 +6,9 @@
 [bank backend 코드 바로가기](src/main/java/com/example/bank)
 
 ## 업데이트
-**26.07.20**
+- **26.07.20**
   - Web Banking Backend Completed
-
-**26.07.22** 
+- **26.07.22** 
   - Docker & Docker Compose Deployment
 
 ## 기술 스택
