@@ -50,35 +50,35 @@ public class AccountServiceIntegrationTest {
 
         // Given
         Member fromMember = new Member(
-                "test111",
+                "test333",
                 "test123!@#",
-                "test1",
-                "01011111111",
-                "test1@example.com"
+                "test3",
+                "01033333333",
+                "test3@example.com"
         );
         Member toMember = new Member(
-                "test222",
+                "test444",
                 "test456$%^",
-                "test2",
-                "01022222222",
-                "test2@example.com"
+                "test4",
+                "01044444444",
+                "test4@example.com"
         );
         memberRepository.save(fromMember);
         memberRepository.save(toMember);
 
         Account fromAccount = new Account(
-                fromMember, "100111111111"
+                fromMember, "100333333333"
         );
         Account toAccount = new Account(
-                toMember, "100222222222"
+                toMember, "100444444444"
         );
         fromAccount.deposit(100000L);
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
 
         TransferRequest request = new TransferRequest(
-                "100111111111",
-                "100222222222",
+                "100333333333",
+                "100444444444",
                 10000L,
                 "테스트 송금"
         );
@@ -120,8 +120,8 @@ public class AccountServiceIntegrationTest {
         assertEquals(TransactionType.TRANSFER_OUT, fromTransaction.getType());
         assertEquals(10000L, fromTransaction.getAmount());
         assertEquals(90000L, fromTransaction.getBalanceAfter());
-        assertEquals("100222222222", fromTransaction.getOpponentAccount());
-        assertEquals("test2", fromTransaction.getOpponentName());
+        assertEquals("100444444444", fromTransaction.getOpponentAccount());
+        assertEquals("test4", fromTransaction.getOpponentName());
         assertEquals("테스트 송금", fromTransaction.getDescription());
         assertNotNull(fromTransaction.getCreatedAt());
 
@@ -130,8 +130,8 @@ public class AccountServiceIntegrationTest {
         assertEquals(TransactionType.TRANSFER_IN, toTransaction.getType());
         assertEquals(10000L, toTransaction.getAmount());
         assertEquals(10000L, toTransaction.getBalanceAfter());
-        assertEquals("100111111111", toTransaction.getOpponentAccount());
-        assertEquals("test1", toTransaction.getOpponentName());
+        assertEquals("100333333333", toTransaction.getOpponentAccount());
+        assertEquals("test3", toTransaction.getOpponentName());
         assertEquals("테스트 송금", toTransaction.getDescription());
         assertNotNull(toTransaction.getCreatedAt());
 
@@ -142,8 +142,8 @@ public class AccountServiceIntegrationTest {
         Notification fromNotification = notifications.getFirst();
         Notification toNotification = notifications.getLast();
 
-        Member updatedFromMember = memberRepository.findByLoginId("test111").orElseThrow();
-        Member updatedToMember = memberRepository.findByLoginId("test222").orElseThrow();
+        Member updatedFromMember = memberRepository.findByLoginId("test333").orElseThrow();
+        Member updatedToMember = memberRepository.findByLoginId("test444").orElseThrow();
 
         assertNotNull(fromNotification.getId());
         assertEquals(updatedFromMember.getId(), fromNotification.getMember().getId());

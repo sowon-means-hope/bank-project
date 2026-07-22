@@ -1,7 +1,15 @@
 # 웹 뱅킹 백엔드 프로젝트
 회원가입, JWT 기반 로그인, 계좌 개설 및 조회, 송금 기능을 중심으로 트랜잭션 관리, 동시성 제어, 이벤트 기반 알림, Trigger 기반 감사 로그를 적용하여 웹 백엔드 시스템을 설계하고 구현하였습니다.
 
+이후 Docker, AWS + Swagger로 배포하고 bank-ai project를 만들어 RAG, AI Agent 기술을 적용, FAST API로 연동할 예정입니다. LangChain이란 것도 써보고 싶습니다.
+
 [bank backend 코드 바로가기](src/main/java/com/example/bank)
+
+## 업데이트
+- **26.07.20**
+  - Web Banking Backend Completed
+- **26.07.22** 
+  - Docker & Docker Compose Deployment
 
 ## 기술 스택
 
