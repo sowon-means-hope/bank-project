@@ -5,7 +5,7 @@
 
 [bank backend 코드 바로가기](src/main/java/com/example/bank)
 
-## 업데이트
+## Update
 - **26.07.20**
   - Web Banking Backend Completed
 - **26.07.22** 
