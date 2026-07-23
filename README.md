@@ -3,11 +3,11 @@
 
 [bank backend 코드 바로가기](src/main/java/com/example/bank)
 
-## Updates
+## 업데이트
 - **26.07.20**
-  - Web Banking Backend Completed
+  - 백엔드 구현 및 테스트
 - **26.07.23**
-  - GitHub Actions + Docker + AWS EC2 Deployment
+  - GitHub Actions + Docker 
 
 ## 기술 스택
 
