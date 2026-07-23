@@ -6,8 +6,11 @@
 ## 업데이트
 - **26.07.20**
   - 백엔드 구현 및 테스트
+- **26.07.22**
+  - Docker & Docker Compose Deployment 로컬 테스트
 - **26.07.23**
-  - GitHub Actions + Docker 
+  - GitHub Actions CI 추가
+  - Dockerfile 변경, docker.yml 추가 등 GitHub Actions에 맞게 변경
 
 ## 기술 스택
 
