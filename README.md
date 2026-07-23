@@ -10,7 +10,8 @@
   - Docker & Docker Compose Deployment 로컬 테스트
 - **26.07.23**
   - GitHub Actions CI 추가
-  - Dockerfile 변경, docker.yml 추가 등 GitHub Actions에 맞게 변경
+  - Dockerfile, docker.yml 변경 및 추가 
+  - docker-compose.yml 수정 후 AWS EC2 연결
 
 ## 기술 스택
 
@@ -263,11 +264,14 @@ JUnit5 + Spring Boot Test
 
 ## 트러블 슈팅
 1. 송금 완료 후 Notifiaction 저장 실패
-   1. 문제 : EventListener는 송금 완료와 이벤트 발행이 rollback 없이 완료되고 실행되어야 하므로 @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)으로 구현하였습니다. 그러나, Commit이 되면 트랜잭션이 종료되어 Notification 저장이 불가능합니다.
-   2. 해결 : Notification 저장에 관해 NotificationService로 책임을 분리하고 NotificationService에 @Transactional(propagation = Propagation.REQUIRES_NEW)를 적용하여 Notification 저장 용 새로운 트랜잭션을 실행합니다.
+   - 문제 : EventListener는 송금 완료와 이벤트 발행이 rollback 없이 완료되고 실행되어야 하므로 @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)으로 구현하였습니다. 그러나, Commit이 되면 트랜잭션이 종료되어 Notification 저장이 불가능합니다.
+   - 해결 : Notification 저장에 관해 NotificationService로 책임을 분리하고 NotificationService에 @Transactional(propagation = Propagation.REQUIRES_NEW)를 적용하여 Notification 저장 용 새로운 트랜잭션을 실행합니다.
+   2. Docker + AWS EC2 배포 실패
+   - 문제 : EC2 메모리 부족
+   - 해결 : GitHub Actions에서 빌드 수행 -> Docker Hub에 Docker Image 저장 -> EC2에서는 다운받아서 실행
 
 ## 개선 및 확장
-앞으로 본 프로젝트에 추가, 개선, 도입할 수 있는 기술들입니다.
+앞으로 본 프로젝트에 추가, 개선, 도입해나갈 사항들입니다.
 
 ### 개선
 1. 핵심 기능(ex-송금)에 대한 모든 테스트 케이스 확인
@@ -275,16 +279,20 @@ JUnit5 + Spring Boot Test
    - 존재하지 않는 계좌로 송금 : AccountNotFoundException 발생
    - 계좌의 상태가 ACTIVE가 아님 : AccountUnavailableException 발생
    - 송금 금액이 0 이하 : 요청 시 validation에서 막히지만, Service에서 Exception 발생시킬 것.
-2. Docker, AWS + Swagger로 패키징 및 배포
-3. Jenkins 도입으로 테스트-패키징-배포 자동화
+2. Docker, AWS + Swagger로 패키징 및 배포 (진행 중)
+3. CI/CD 도입으로 테스트-패키징-배포 자동화 (-> GitHub Actions)
 
 ### 확장
-1. RAG 거래내역 검색 : 기존의 거래내역 조회을 AI 기술을 이용하여 구현
-2. member에 role 컬럼 추가 : 단순 현금 입출금, RAG 거래 통계 기능 추가 가능
-   - ROLE_USER : 일반 사용자
-   - ROLE_BANKER : 은행 창구
-   - ROLE_ATM : ATM
-   - ROLE_ADMIN : 관리자
-3. 자동이체 기능 추가 : Scheduler + Batch를 사용하여 자동이체 등록 및 해지, 자동이체 목록 및 상세 조회 추가 가능
-4. AI Agent 송금 : 기존의 송금 기능을 AI가 수행
-5. AI 이상 거래 탐지 -> 해당 계좌를 블랙 리스트(Redis)에 올리고 임시 차단(Lock) -> 관리자 확인 요청 -> 계좌 동결(FROZEN)
+1. bank-front로 프론트엔드 개발
+2. bank-project 기능 추가
+   - member에 role 컬럼 추가 : 단순 현금 입출금, RAG 거래 통계 기능 추가 가능
+     - ROLE_USER : 일반 사용자
+     - ROLE_BANKER : 은행 창구
+     - ROLE_ATM : ATM
+     - ROLE_ADMIN : 관리자
+   - 자동이체 기능 추가 : Scheduler + Batch
+     - 자동이체 등록 및 해지
+     - 자동이체 목록 및 상세 조회
+3. bank-ai로 ai 기술 적용
+   - RAG 거래내역 검색 : 기존의 거래내역 조회를 AI가 수행
+   - AI Agnet 송금 : 기존의 송금 기능을 AI가 수행
