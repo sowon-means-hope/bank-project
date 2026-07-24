@@ -5,6 +5,7 @@ import com.example.bank.dto.transaction.TransactionResponse;
 import com.example.bank.dto.transaction.TransactionSearchRequest;
 import com.example.bank.security.CustomUserDetails;
 import com.example.bank.service.TransactionService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -24,6 +25,10 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @GetMapping
+    @Operation(
+            summary = "거래내역 조회",
+            description = "로그인한 사용자가 자신의 계좌번호로 해당 계좌의 거래내역을 조회합니다. 거래타입, 거래기간, 페이지 및 한 페이지 내 갯수를 선택적으로 입력할 수 있습니다."
+    )
     public ResponseEntity<List<TransactionResponse>> searchTransactions(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Pattern(
@@ -41,6 +46,10 @@ public class TransactionController {
     }
 
     @GetMapping("/recent-targets")
+    @Operation(
+            summary = "최근 거래 상대 조회",
+            description = "빠른 송금을 위하여 로그인한 사용자의 계좌별 최근 거래 상대를 조회합니다."
+    )
     public ResponseEntity<List<RecentTargetResponse>> getRecentTargets(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Pattern(
