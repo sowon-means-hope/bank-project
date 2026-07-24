@@ -9,11 +9,9 @@
 - **26.07.22**
   - Docker & Docker Compose Deployment 로컬 테스트
 - **26.07.23**
-  - GitHub Actions CI 추가
-  - Dockerfile, docker.yml 변경 및 추가 
-  - docker-compose.yml 수정 후 AWS EC2 연결
+  - GitHub Actions CI + AWS EC2 배포
 - **2026.07.24**
-  - Swagger API 추가 후 재배포
+  - Swagger API 추가 배포
 
 ## 기술 스택
 
@@ -281,11 +279,12 @@ JUnit5 + Spring Boot Test
    - 존재하지 않는 계좌로 송금 : AccountNotFoundException 발생
    - 계좌의 상태가 ACTIVE가 아님 : AccountUnavailableException 발생
    - 송금 금액이 0 이하 : 요청 시 validation에서 막히지만, Service에서 Exception 발생시킬 것.
-2. Docker, AWS + Swagger로 패키징 및 배포 (진행 중)
-3. CI/CD 도입으로 테스트-패키징-배포 자동화 (-> GitHub Actions)
+2. Docker, AWS + Swagger로 패키징 및 배포 (완료)
+3. CI/CD 도입으로 테스트-패키징-배포 자동화 (GitHub Actions 완료)
+4. 패키지를 도메인별로 리팩토링
 
 ### 확장
-1. bank-front로 프론트엔드 개발
+1. bank-front로 프론트엔드 개발 후 연동 (<- next)
 2. bank-project 기능 추가
    - member에 role 컬럼 추가 : 단순 현금 입출금, RAG 거래 통계 기능 추가 가능
      - ROLE_USER : 일반 사용자
@@ -295,6 +294,6 @@ JUnit5 + Spring Boot Test
    - 자동이체 기능 추가 : Scheduler + Batch
      - 자동이체 등록 및 해지
      - 자동이체 목록 및 상세 조회
-3. bank-ai로 ai 기술 적용
+3. bank-ai로 ai 기술 적용 후 연동
    - RAG 거래내역 검색 : 기존의 거래내역 조회를 AI가 수행
-   - AI Agnet 송금 : 기존의 송금 기능을 AI가 수행
+   - AI Agent 송금 : 기존의 송금 기능을 AI가 수행

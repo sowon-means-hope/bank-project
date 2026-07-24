@@ -1,10 +1,6 @@
 package com.example.bank.service;
 
-import com.example.bank.dto.account.AccountDetailResponse;
-import com.example.bank.dto.account.AccountResponse;
-import com.example.bank.dto.account.VerifyAccountResponse;
-import com.example.bank.dto.account.TransferRequest;
-import com.example.bank.dto.account.TransferResponse;
+import com.example.bank.dto.account.*;
 import com.example.bank.entity.Account;
 import com.example.bank.entity.Member;
 import com.example.bank.entity.Transaction;
@@ -111,7 +107,6 @@ public class AccountService {
     @Transactional
     public TransferResponse transfer(
             TransferRequest request,
-
             Long memberId
     ){
         String fromAccountNumber = request.fromAccountNumber();
@@ -180,5 +175,26 @@ public class AccountService {
         return new TransferResponse(fromTransaction);
     }
 
+    @Transactional
+    public AccountResponse deposit(
+            DepositRequest request,
+            String accountNumber,
+            Long memberId
+    ){
+        Account account = accountRepository.findByAccountNumberAndMemberId(accountNumber, memberId)
+                .orElseThrow(AccountNotFoundException::new);
+
+        account.deposit(request.amount());
+
+        // save transaction
+
+        // publish notification event
+
+        return new AccountResponse(
+                account.getAccountNumber(),
+                account.getBalance(),
+                account.getStatus()
+        );
+    }
 
 }

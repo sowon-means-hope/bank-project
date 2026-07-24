@@ -1,10 +1,6 @@
 package com.example.bank.controller;
 
-import com.example.bank.dto.account.AccountDetailResponse;
-import com.example.bank.dto.account.AccountResponse;
-import com.example.bank.dto.account.VerifyAccountResponse;
-import com.example.bank.dto.account.TransferRequest;
-import com.example.bank.dto.account.TransferResponse;
+import com.example.bank.dto.account.*;
 import com.example.bank.security.CustomUserDetails;
 import com.example.bank.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,6 +50,22 @@ public class AccountController {
                 accountService.getAccounts(userDetails.getMemberId());
 
         return ResponseEntity.ok(accounts);
+    }
+
+    @PostMapping("/{accountNumber}/deposit")
+    @Operation(
+            summary = "입금",
+            description = "송금 테스트를 위하여 해당 계좌번호의 잔액에 금액을 더합니다."
+    )
+    public ResponseEntity<AccountResponse> deposit(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable String accountNumber,
+            @Valid @RequestBody DepositRequest request
+    ){
+        AccountResponse response =
+                accountService.deposit(request, accountNumber, userDetails.getMemberId());
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{accountNumber}")
@@ -121,4 +133,5 @@ public class AccountController {
 
         return ResponseEntity.ok(response);
     }
+
 }
