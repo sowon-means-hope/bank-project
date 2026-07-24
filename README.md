@@ -12,6 +12,8 @@
   - GitHub Actions CI 추가
   - Dockerfile, docker.yml 변경 및 추가 
   - docker-compose.yml 수정 후 AWS EC2 연결
+- **2026.07.24**
+  - Swagger API 추가 후 재배포
 
 ## 기술 스택
 
