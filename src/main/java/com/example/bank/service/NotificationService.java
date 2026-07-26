@@ -1,5 +1,6 @@
 package com.example.bank.service;
 
+import com.example.bank.dto.notification.NotificationDetailResponse;
 import com.example.bank.dto.notification.NotificationReadResponse;
 import com.example.bank.dto.notification.NotificationResponse;
 import com.example.bank.entity.Notification;
@@ -40,8 +41,20 @@ public class NotificationService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public NotificationDetailResponse getNotificationDetails(
+            Long notificationsId,
+            Long memberId
+    ){
+        Notification notification =
+                notificationRepository.findByIdAndMemberId(notificationsId, memberId)
+                        .orElseThrow(NotificationNotFoundException::new);
+
+        return new NotificationDetailResponse(notification);
+    }
+
     @Transactional
-    public NotificationReadResponse setRead(
+    public void setRead(
             Long notificationsId,
             Long memberId
     ){
@@ -50,14 +63,5 @@ public class NotificationService {
                         .orElseThrow(NotificationNotFoundException::new);
 
         notification.setRead();
-
-        Transaction transaction =
-                transactionRepository.findById(notification.getReferenceId())
-                        .orElseThrow(TransactionNotFoundException::new);
-
-        return new NotificationReadResponse(
-                transaction.getAccount().getAccountNumber(),
-                transaction.getId()
-        );
     }
 }

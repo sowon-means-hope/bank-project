@@ -4,7 +4,7 @@
 [bank backend 코드 바로가기](src/main/java/com/example/bank)
 
 ## 업데이트
-- **26.07.20**
+- **26.07.03 - 20**
   - 백엔드 구현 및 테스트
 - **26.07.22**
   - Docker & Docker Compose Deployment 로컬 테스트
@@ -12,6 +12,8 @@
   - GitHub Actions CI + AWS EC2 배포
 - **2026.07.24**
   - Swagger API 추가 배포
+- **2026.07.26**
+  - 알림 상세 조회 추가
 
 ## 기술 스택
 
