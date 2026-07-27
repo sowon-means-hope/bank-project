@@ -2,7 +2,7 @@
 웹 서비스 백엔드의 전반적인 구조를 이해 및 설계하고 자주 사용되거나 새로운 기술들을 적용하며 구현 및
 확장해나가는 것을 목표로 웹 뱅킹 서비스의 백엔드 시스템을 개발하는 개인 프로젝트입니다.
 
-[bank backend 코드 바로가기](src/main/java/com/example/bank)
+[bank-backend 코드 바로가기](src/main/java/com/example/bank)
 
 ## 업데이트
 - **26.07.03 - 20**
