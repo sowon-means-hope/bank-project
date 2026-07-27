@@ -1,53 +1,35 @@
 # 웹 뱅킹 백엔드 프로젝트
-회원가입, JWT 기반 로그인, 계좌 개설 및 조회, 송금 기능을 중심으로 트랜잭션 관리, 동시성 제어, 이벤트 기반 알림, Trigger 기반 감사 로그를 적용하여 웹 백엔드 시스템을 설계하고 구현하였습니다
+웹 서비스 백엔드의 전반적인 구조를 이해 및 설계하고 자주 사용되거나 새로운 기술들을 적용하며 구현 및
+확장해나가는 것을 목표로 웹 뱅킹 서비스의 백엔드 시스템을 개발하는 개인 프로젝트입니다.
 
 [bank backend 코드 바로가기](src/main/java/com/example/bank)
 
 ## 업데이트
 - **26.07.03 - 20**
-  - 백엔드 구현 및 테스트
-- **26.07.22**
-  - Docker & Docker Compose Deployment 로컬 테스트
-- **26.07.23**
-  - GitHub Actions CI + AWS EC2 배포
-- **2026.07.24**
-  - Swagger API 추가 배포
+  - 기능, DB, API,아키텍처 설계와 구현 및 테스트
+- **26.07.22 - 24**
+  - GitHub Actions + Docker + AWS EC2 배포 및 Swagger UI 문서화
 - **2026.07.26**
-  - 알림 상세 조회 추가
+  - 알림 기능 수정
+- **2026.07.27 -**
+  - 프론트엔드 개발
 
 ## 기술 스택
 
-### Backend
-- Java 25
-- Spring Boot
-- Spring Security
-- Spring Data JPA
-- MyBatis
-
-### Database
-- PostgreSQL
-
-### Test
-- JUnit5
-- Mockito
-- Spring Boot Test
-
-### DevOps
-- Git / GitHub
-
-### Tools
-- IntelliJ IDEA
-- pgAdmin
-- Postman
-- Flyway
+- Java 25 | Spring Boot | JWT | JPA | MyBatis
+- PostgreSQL | Flyway
+- Postman | JUnit5 | Mockito | Spring Boot Test
+- Docker | AWS | GitHub Actions | Docker Hub
 
 ## 구현 기능
 
-### 사용자
-- 회원가입 
-- 로그인 (JWT 발급 및 인증)
+### Member
+- 회원가입 : 회원정보 생성
 
-### 계좌
+### Auth
+- 로그인 : JWT 발급 및 인증
+
+### Account
 - 계좌 개설
 - 내 계좌 조회 (1:N)
 - 계좌 상세 조회
@@ -59,11 +41,12 @@
   - Event + Listener 통한 입출금 알림 생성
 
 ### 거래
-- 거래내역 조회 (Mybatis)
-- 최근 거래 상대 조회 (Mybatis)
+- 거래내역 조회 : 조건 검색 및 정렬
+- 최근 거래 상대 조회
 
 ### 알림
-- 송금 알림 조회
+- 알림 조회
+- 알림 상세 조회
 - 알림 읽음 처리
 
 ### 로그
@@ -164,34 +147,39 @@ audit_log의 로그 자동 생성
 
 ## API
 | Domain | Method  | Endpoint                                                                     | Description |
-|--------|---------|------------------------------------------------------------------------------|------------|
-| Member | `POST`  | `/members`                                                                   | 회원가입       |
-| Auth   | `POST`  | `/auth/login`                                                                | 로그인        |
-| Account | `POST`  | `/accounts`                                                                  | 계좌 개설      |
-| Account | `GET`   | `/accounts`                                                                  | 계좌 조회      |
-| Account | `GET`   | `/accounts/{accountNumber}`                                                  | 계좌 상세 조회   |
-| Account | `PATCH` | `/accounts/{accountNumber}`                                                  | 계좌 해지      |
-| Account | `GET`   | `/accounts/verify?accountNumber={accountNumber}`                             | 예금주 조회     |
-| Account | `POST`  | `/accounts/transfer`                                                         | 송금         |
-| Transaction | `GET` | `/transactions/{accountNumber}`                                              | 거래내역 조회    |
-| Transaction | `GET` | `/transactions/{accountNumber}/recent-targets` | 최근 거래 상대 조회 |
-| Notification | `GET` | `/notifications`                                                             | 알림 내역 조회 |
-| Notification | `PATCH` | `/notifications/{notificationId}`                                            | 알림 읽음 처리 |
+|--------|---------|------------------------------------------------------------------------------|-------------|
+| Member | `POST`  | `/members`                                                                   | 회원가입        |
+| Auth   | `POST`  | `/auth/login`                                                                | 로그인         |
+| Account | `POST`  | `/accounts`                                                                  | 계좌 개설       |
+| Account | `GET`   | `/accounts`                                                                  | 계좌 조회       |
+| Account | `GET`   | `/accounts/{accountNumber}`                                                  | 계좌 상세 조회    |
+| Account | `PATCH` | `/accounts/{accountNumber}`                                                  | 계좌 해지       |
+| Account | `GET`   | `/accounts/verify?accountNumber={accountNumber}`                             | 예금주 조회      |
+| Account | `POST`  | `/accounts/transfer`                                                         | 송금          |
+| Transaction | `GET`   | `/transactions/{accountNumber}`                                              | 거래내역 조회     |
+| Transaction | `GET`   | `/transactions/{accountNumber}/recent-targets` | 최근 거래 상대 조회 |
+| Notification | `GET`   | `/notifications`                                                             | 알림 내역 조회    |
+| Notification | `GET`   | `/notifications/{notificationId}`                                            | 알림 상세 조회    |
+| Notification | `PATCH` | `/notifications/{notificationId}`                                            | 알림 읽음 처리    |
 
 ## 핵심 기능
+
+### 로그인
+JWT 로그인 인증 방식으로 서버의 자유를 보장
+
+- JWT 발급
+![JwtIssue](images/issue_JWT.png)
+- JWT 검증
+![Authentication](images/authentication.png)
+
 
 ### 송금
 로그인한 사용자가 자신의 계좌에서 다른 계좌로 송금하는 기능입니다
 
 ![Transfer](images/transfer.drawio.png)
-
-- JWT 로그인 인증 방식으로 서버의 자유를 보장
 - @Transactional 사용으로 송금 과정의 원자성 보장
 - Pessimistic Lock으로 동시 송금 방지
 - EventListener는 AFTER_COMMIT으로 rollback 반영
-
-![TransferPostman](images/transfer.postman.png)
-송금 Postman 실행 결과
 
 ### 거래내역 조회
 로그인한 사용자가 자신의 계좌별 거래내역을 조회하는 기능입니다. 거래타입이나 거래기간(시작/종료 날짜)를 선택할 수 있습니다.
@@ -237,11 +225,16 @@ audit_log의 로그 자동 생성
 - 동적 SQL 통해 거래타입, 거래기간, 페이지 등의 조건을 유연하게 처리
 - 조회 성능을 위해 계좌와 거래일시 컬럼에 Index 적용
 
-![TransactionPostman](images/transaction.postman.png)
-거래내역 조회 Postman 실행 결과
-
 ## 테스트
 핵심 기능인 송금에 대하여 송금 성공과 잔액 부족으로 인한 실패를 Given / When /Then에 맞추어 테스트하였습니다.
+
+### API 테스트
+Postman
+
+- 송금
+![TransferPostman](images/transfer.postman.png)
+- 거래내역 조회
+![TransactionPostman](images/transaction.postman.png)
 
 ### 단위 테스트
 JUnit5 + Mockito
@@ -268,7 +261,7 @@ JUnit5 + Spring Boot Test
 1. 송금 완료 후 Notifiaction 저장 실패
    - 문제 : EventListener는 송금 완료와 이벤트 발행이 rollback 없이 완료되고 실행되어야 하므로 @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)으로 구현하였습니다. 그러나, Commit이 되면 트랜잭션이 종료되어 Notification 저장이 불가능합니다.
    - 해결 : Notification 저장에 관해 NotificationService로 책임을 분리하고 NotificationService에 @Transactional(propagation = Propagation.REQUIRES_NEW)를 적용하여 Notification 저장 용 새로운 트랜잭션을 실행합니다.
-   2. Docker + AWS EC2 배포 실패
+2. Docker + AWS EC2 배포 실패
    - 문제 : EC2 메모리 부족
    - 해결 : GitHub Actions에서 빌드 수행 -> Docker Hub에 Docker Image 저장 -> EC2에서는 다운받아서 실행
 
@@ -286,7 +279,7 @@ JUnit5 + Spring Boot Test
 4. 패키지를 도메인별로 리팩토링
 
 ### 확장
-1. bank-front로 프론트엔드 개발 후 연동 (<- next)
+1. bank-front 프로젝트 : 프론트엔드 개발 후 연동(진행 중)
 2. bank-project 기능 추가
    - member에 role 컬럼 추가 : 단순 현금 입출금, RAG 거래 통계 기능 추가 가능
      - ROLE_USER : 일반 사용자
@@ -296,6 +289,6 @@ JUnit5 + Spring Boot Test
    - 자동이체 기능 추가 : Scheduler + Batch
      - 자동이체 등록 및 해지
      - 자동이체 목록 및 상세 조회
-3. bank-ai로 ai 기술 적용 후 연동
+3. bank-ai 프로젝트 : ai 서비스 개발 후 연동
    - RAG 거래내역 검색 : 기존의 거래내역 조회를 AI가 수행
    - AI Agent 송금 : 기존의 송금 기능을 AI가 수행
