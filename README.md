@@ -281,7 +281,7 @@ JUnit5 + Spring Boot Test
 ### 확장
 1. bank-front 프로젝트 : 프론트엔드 개발 후 연동(진행 중)
 2. bank-project 기능 추가
-   - member에 role 컬럼 추가 : 단순 현금 입출금, RAG 거래 통계 기능 추가 가능
+   - member에 role 컬럼 추가 : Spring Security, 현금 입출금, RAG 거래 통계 기능 추가 가능
      - ROLE_USER : 일반 사용자
      - ROLE_BANKER : 은행 창구
      - ROLE_ATM : ATM
